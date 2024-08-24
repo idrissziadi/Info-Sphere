@@ -10,6 +10,7 @@ import MovieApp from './pages/MovieApp';
 import FoodRecipe from './pages/FoodRecipe';
 import LyricsFinder from './pages/LyricsFinder';
 import MusicPlayer from './pages/MusicPlayer';
+import NewsApp from './pages/NewsApp';
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
         <Route path='/foodrecipe' Component={FoodRecipe} />
         <Route path='/lyricsfinder' Component={LyricsFinder} />
         <Route path='/musicplayer' Component={MusicPlayer} />
+        <Route path='/news' Component={NewsApp} />
         </Routes>
       </Router>
       
