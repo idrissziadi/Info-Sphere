@@ -8,6 +8,8 @@ import ContactUs from './pages/ContactUs';
 import AboutUs from './pages/AboutUs';
 import MovieApp from './pages/MovieApp';
 import FoodRecipe from './pages/FoodRecipe';
+import LyricsFinder from './pages/LyricsFinder';
+import MusicPlayer from './pages/MusicPlayer';
 
 const App = () => {
   return (
@@ -21,6 +23,8 @@ const App = () => {
         <Route path='/Contact' Component={ContactUs} />
         <Route path='/movie' Component={MovieApp} />
         <Route path='/foodrecipe' Component={FoodRecipe} />
+        <Route path='/lyricsfinder' Component={LyricsFinder} />
+        <Route path='/musicplayer' Component={MusicPlayer} />
         </Routes>
       </Router>
       
