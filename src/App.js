@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import ContactUs from './pages/ContactUs';
 import AboutUs from './pages/AboutUs';
 import MovieApp from './pages/MovieApp';
+import FoodRecipe from './pages/FoodRecipe';
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
         <Route path='/About' Component={AboutUs} />
         <Route path='/Contact' Component={ContactUs} />
         <Route path='/movie' Component={MovieApp} />
+        <Route path='/foodrecipe' Component={FoodRecipe} />
         </Routes>
       </Router>
       

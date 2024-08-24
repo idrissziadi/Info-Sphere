@@ -1,9 +1,7 @@
-// src/components/MovieApp.jsx
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from '../api/tmdb';
-import { Grid, Paper, Typography, Card, CardContent, CardMedia, CardActions, Button, TextField, InputAdornment, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Slide, AppBar, Toolbar, Pagination, Chip, Rating } from '@mui/material';
+import { Grid, Paper, Typography, Card, CardContent, CardMedia, CardActions, Button, TextField, InputAdornment, IconButton, Dialog, DialogContent, DialogActions, Slide, AppBar, Toolbar, Pagination, Rating } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom'; // Import the useNavigate hook
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import CloseIcon from '@mui/icons-material/Close';
@@ -13,44 +11,38 @@ import { Howl } from 'howler';
 
 
 const clickSound = new Howl({ src: ['/assets/button.wav'] });
-const MovieApp = () => {
+
+const FoodRecipe = () => {
     const [searchValue, setSearchValue] = useState("");
-    const [movies, setMovies] = useState([]);
+    const [recipes, setRecipes] = useState([]);
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [selectedMovie, setSelectedMovie] = useState(null);
+    const [selectedRecipe, setSelectedRecipe] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [favorites, setFavorites] = useState([]);
-    const moviesPerPage = 6;
-    const navigate = useNavigate();
+    const recipesPerPage = 6;
     const theme = useTheme();
-    const API_KEY = process.env.API_KEY;
+    const navigate = useNavigate(); // Initialize useNavigate
 
     useEffect(() => {
-        if (searchValue === "") return;
-        const fetchMovies = async () => {
+        const fetchRecipes = async () => {
             try {
-                const response = await axios.get('/search/movie', {
-                    params: {
-                        query: searchValue,
-                        page: currentPage
-                    }
-                });
-                const data = response.data;
-                if (data.results) {
-                    setMovies(data.results);
+                const response = await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=');
+                const data = await response.json();
+                if (data.meals) {
+                    setRecipes(data.meals);
                 } else {
-                    console.error('No movies found');
+                    console.error('No recipes found');
                 }
             } catch (error) {
-                console.error('Error fetching movies:', error);
+                console.error('Error fetching recipes:', error);
             }
         };
-        fetchMovies();
-    }, [searchValue, currentPage]);
+        fetchRecipes();
+    }, []);
 
     const handleClear = () => {
         setSearchValue("");
-        setMovies([]);
+        setRecipes([]);
     };
 
     const handleSearch = (event) => {
@@ -59,18 +51,13 @@ const MovieApp = () => {
         setCurrentPage(1);
     };
 
-    const openMovieDialog = async (movieId) => {
-        try {
-            const response = await axios.get(`/movie/${movieId}`);
-            setSelectedMovie(response.data);
-            setDialogOpen(true);
-        } catch (error) {
-            console.error('Error fetching movie details:', error);
-        }
+    const openRecipeDialog = (recipe) => {
+        setSelectedRecipe(recipe);
+        setDialogOpen(true);
     };
 
-    const closeMovieDialog = () => {
-        setSelectedMovie(null);
+    const closeRecipeDialog = () => {
+        setSelectedRecipe(null);
         setDialogOpen(false);
         clickSound.play();
     };
@@ -83,29 +70,29 @@ const MovieApp = () => {
         setCurrentPage(value);
     };
 
-    const indexOfLastMovie = currentPage * moviesPerPage;
-    const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
-    const currentMovies = movies.slice(indexOfFirstMovie, indexOfLastMovie);
+    const indexOfLastRecipe = currentPage * recipesPerPage;
+    const indexOfFirstRecipe = indexOfLastRecipe - recipesPerPage;
+    const currentRecipes = recipes.slice(indexOfFirstRecipe, indexOfLastRecipe);
 
     const playSound = (soundFile) => {
         const audio = new Audio(soundFile);
         audio.play();
     };
 
-    const handleButtonClick = () => {
+    const handleAddToFavorites = (recipe) => {
+        setFavorites([...favorites, recipe]);
         playSound('/assets/button.wav');
-        navigate('/home');
     };
 
-    const handleAddToFavorites = (movie) => {
-        setFavorites([...favorites, movie]);
-        playSound('/assets/button.wav');
+    const handleGoHome = () => {
+        navigate('/Home'); // Redirect to the Home route
+        clickSound.play();
     };
 
     return (
         <Grid container minHeight={"100vh"} sx={{ display: "flex", alignItems: "center", justifyContent: "center", background: theme.palette.background.default }}>
             <Grid item xs={12} sm={10} md={8}>
-                <Typography variant="h4" align="center" gutterBottom sx={{ color: theme.palette.primary.main }}>Movie Search App</Typography>
+                <Typography variant="h4" align="center" gutterBottom sx={{ color: theme.palette.primary.main }}>Food Recipe App</Typography>
                 <Paper sx={{ padding: "30px", borderRadius: "15px", background: theme.palette.secondary.main }}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
@@ -113,7 +100,7 @@ const MovieApp = () => {
                                 fullWidth
                                 variant='outlined'
                                 size='small'
-                                placeholder="Search movies..."
+                                placeholder="Search recipes..."
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
@@ -135,23 +122,23 @@ const MovieApp = () => {
                         </Grid>
                         <Grid item xs={12}>
                             <Grid container spacing={2}>
-                                {currentMovies.map((movie) => (
-                                    <Grid key={movie.id} item xs={12} sm={6} md={4}>
+                                {currentRecipes.map((recipe) => (
+                                    <Grid key={recipe.idMeal} item xs={12} sm={6} md={4}>
                                         <Card sx={{ display: "flex", flexDirection: "column", height: '100%', background: theme.palette.background.paper }}>
                                             <CardMedia
                                                 component="img"
                                                 height="200"
-                                                image={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                                                alt={movie.title}
+                                                image={recipe.strMealThumb}
+                                                alt={recipe.strMeal}
                                             />
                                             <CardContent>
-                                                <Typography variant="h6">{movie.title}</Typography>
-                                                <Typography variant="body2" color="textSecondary">{movie.release_date}</Typography>
-                                                <Rating value={movie.vote_average / 2} readOnly />
+                                                <Typography variant="h6">{recipe.strMeal}</Typography>
+                                                <Typography variant="body2" color="textSecondary">{recipe.strArea}</Typography>
+                                                <Rating value={4} readOnly />
                                             </CardContent>
                                             <CardActions sx={{ justifyContent: "space-between" }}>
-                                                <Button onClick={() =>{openMovieDialog(movie.id) ; clickSound.play() }} startIcon={<PlayArrowIcon />}>Details</Button>
-                                                <IconButton onClick={() => handleAddToFavorites(movie)} color="secondary">
+                                                <Button onClick={() => {openRecipeDialog(recipe) ; clickSound.play()}} startIcon={<PlayArrowIcon />}>Details</Button>
+                                                <IconButton onClick={() => handleAddToFavorites(recipe)} color="secondary">
                                                     <FavoriteIcon />
                                                 </IconButton>
                                             </CardActions>
@@ -162,24 +149,26 @@ const MovieApp = () => {
                         </Grid>
                         <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
                             <Pagination
-                                count={Math.ceil(movies.length / moviesPerPage)}
+                                count={Math.ceil(recipes.length / recipesPerPage)}
                                 page={currentPage}
                                 onChange={handleChangePage}
                                 color="primary"
                             />
                         </Grid>
                         <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
-                            <Button variant="contained" color="primary" onClick={handleButtonClick}>Go to Home</Button>
+                            <Button variant="contained" color="primary" onClick={handleGoHome}>
+                                Go to Home
+                            </Button>
                         </Grid>
                     </Grid>
                 </Paper>
             </Grid>
 
-            {/* Movie Dialog */}
+            {/* Recipe Dialog */}
             <Dialog
                 fullScreen
                 open={dialogOpen}
-                onClose={closeMovieDialog}
+                onClose={closeRecipeDialog}
                 TransitionComponent={Transition}
             >
                 <AppBar sx={{ position: 'relative', backgroundColor: theme.palette.primary.main }}>
@@ -187,13 +176,13 @@ const MovieApp = () => {
                         <IconButton
                             edge="start"
                             color="inherit"
-                            onClick={closeMovieDialog}
+                            onClick={closeRecipeDialog}
                             aria-label="close"
                         >
                             <CloseIcon />
                         </IconButton>
                         <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                            {selectedMovie && selectedMovie.title}
+                            {selectedRecipe && selectedRecipe.strMeal}
                         </Typography>
                     </Toolbar>
                 </AppBar>
@@ -201,30 +190,19 @@ const MovieApp = () => {
                     <CardMedia
                         component="img"
                         height="300"
-                        image={`https://image.tmdb.org/t/p/w500${selectedMovie && selectedMovie.poster_path}`}
-                        alt={selectedMovie && selectedMovie.title}
+                        image={selectedRecipe && selectedRecipe.strMealThumb}
+                        alt={selectedRecipe && selectedRecipe.strMeal}
                     />
                     <Typography variant="body1" sx={{ marginTop: 2 }}>
-                        Release Date: {selectedMovie && selectedMovie.release_date}
-                    </Typography>
-                    <Typography variant="body1" sx={{ marginTop: 2 }}>
-                        Overview: {selectedMovie && selectedMovie.overview}
-                    </Typography>
-                    <Typography variant="body1" sx={{ marginTop: 2 }}>
-                        Genre: {selectedMovie && selectedMovie.genres.map(genre => genre.name).join(', ')}
-                    </Typography>
-                    <Typography variant="body1" sx={{ marginTop: 2 }}>
-                        Rating: <Rating value={selectedMovie && selectedMovie.vote_average / 2} readOnly />
+                        {selectedRecipe && selectedRecipe.strInstructions}
                     </Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={closeMovieDialog}>
-                        Close
-                    </Button>
+                    <Button onClick={closeRecipeDialog}>Close</Button>
                 </DialogActions>
             </Dialog>
         </Grid>
     );
-};
+}
 
-export default MovieApp;
+export default FoodRecipe;
