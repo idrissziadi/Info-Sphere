@@ -145,7 +145,7 @@ const ContactUs = () => {
                 mb: 2,
               }}
             >
-              Email: contact@gamehub.com
+              Email: contact@Infosphere.com
             </Typography>
             <Typography
               variant="body1"
@@ -169,7 +169,7 @@ const ContactUs = () => {
                 mb: 2,
               }}
             >
-              Address: 123 Game Street, Gaming City, 12345
+              Address: 123 Ghardaia, Algeria, 12345
             </Typography>
           </Grid>
         </Grid>

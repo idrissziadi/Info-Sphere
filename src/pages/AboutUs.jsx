@@ -43,7 +43,7 @@ const AboutUs = () => {
                   mb: 3,
                 }}
               >
-                Welcome to Game Hub, where we bring you the best games for every taste and age. Our mission is to create an inclusive and exciting gaming experience for everyone. Whether you are a casual player or a dedicated gamer, we have something for you!
+                Welcome to Info Sphere, It is your all-in-one tool for discovering and enjoying diverse content. Search for movies, find recipes, stay updated with news, listen to music, and explore lyrics, all within a single app. Enhance your daily life with a seamless blend of information and entertainment.
               </Typography>
               <Button
                 variant="contained"
@@ -128,7 +128,8 @@ const AboutUs = () => {
                     fontWeight: 400,
                   }}
                 >
-                  At Game Hub, we believe in the power of games to connect people and bring joy. Our vision is to be a leading platform that offers not only great games but also fosters a community where gamers can thrive.
+                  
+                  At Infosphere, we believe in empowering individuals to take control of their health through accessible and reliable tools. Our vision is to be a leading app that offers a variety of calculators focused on health, helping users make informed decisions and track their well-being effectively.
                 </Typography>
               </CardContent>
             </Card>
